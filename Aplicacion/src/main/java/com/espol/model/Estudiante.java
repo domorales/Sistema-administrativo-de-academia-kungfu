@@ -11,6 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import com.espol.controller.alerts.Alerts;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -116,9 +119,7 @@ public class Estudiante implements  Datos{
             ps.execute();
             
         } catch (Exception e) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setContentText(e.getMessage());
-            alerta.show();
+        	Alerts.alertaError(e.getMessage());
         }
     }
 

@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import com.espol.controller.alerts.Alerts;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -69,15 +72,11 @@ public class Curso implements Datos {
             PreparedStatement cs = con.prepareStatement(query);
             cs.setInt(1, this.idCurso);
             cs.setInt(2,946434396);
-            
             cs.setDate(3,Date.valueOf(this.fechaClase ));
             cs.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setHeaderText(null);
-            alerta.setContentText("Clase ya existente");
-            alerta.show();
+            Alerts.alertaError("Clase ya existente");
       }
     }
 

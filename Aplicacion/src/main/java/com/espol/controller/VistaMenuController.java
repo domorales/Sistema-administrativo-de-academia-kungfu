@@ -5,6 +5,7 @@
  */
 package com.espol.controller;
 
+import com.espol.controller.alerts.Alerts;
 import com.espol.model.Estudiante;
 import com.espol.proyectobd.App;
 import java.io.IOException;
@@ -62,13 +63,9 @@ public class VistaMenuController implements Initializable {
 
     @FXML
     private void cerrarSesion(ActionEvent event) throws IOException {
-         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-       alerta.setContentText("¿Esta seguro de cerrar sesión? ");
-       Optional<ButtonType> result = alerta.showAndWait();
-       if(result.get().getText().equals("Aceptar")){
-            App.setRoot("VistaLogin");
-       } 
-        
+       String result = Alerts.alertaConfirmacion("¿Esta seguro de cerrar sesión? ");
+       if(result.equals("Aceptar"))
+            App.setRoot("VistaLogin"); 
     }
 
     @FXML

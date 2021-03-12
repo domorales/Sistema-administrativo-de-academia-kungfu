@@ -5,6 +5,7 @@
  */
 package com.espol.controller;
 
+import com.espol.controller.alerts.Alerts;
 import com.espol.model.Curso;
 import com.espol.model.Empleado;
 import com.espol.model.Estudiante;
@@ -141,41 +142,53 @@ public class VistaBuscarController implements Initializable {
     @FXML
     private Button bttLimpiarCurso;
 
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // columnas de la tabla empleado
-        columnIDEmpleado.setCellValueFactory(new PropertyValueFactory("id"));
+        definirFormatoTexto();
+        configurarColumnasTablaEmpleado();
+        configurarColumnasTablaEstudiante();
+        configurarColumnasTablaCurso();
+        anadirDatosTablas();
+    }
+    
+    private void definirFormatoTexto(){
+    	textCedulaEstudiante.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
+        textIDempleado.setTextFormatter(Validaciones.restriccionesText("[0-9]*"));
+        textIDCurso.setTextFormatter(Validaciones.restriccionesText("[0-9]*"));
+        textProfesorCurso.setTextFormatter(Validaciones.restriccionesText("[a-zA-Z.,\\s]*"));
+    }
+    
+    private void configurarColumnasTablaEmpleado(){
+    	columnIDEmpleado.setCellValueFactory(new PropertyValueFactory("id"));
         columnNombreEmpleado.setCellValueFactory(new PropertyValueFactory("nombreCompleto"));
         columnCorreoEmpleado.setCellValueFactory(new PropertyValueFactory("correoElectronico"));
         columnFechaNacEmpleado.setCellValueFactory(new PropertyValueFactory("fechaNacimiento"));
         columnDireccionEmpleado.setCellValueFactory(new PropertyValueFactory("direccionDomicilio"));
         columnTelfEmpleado.setCellValueFactory(new PropertyValueFactory("telefono"));
-        //columnCursoEmpleado.setCellValueFactory(new PropertyValueFactory("idCurso"));
-
-        //columnas de la tabla estudiante
-        columnCedulaEstudiante.setCellValueFactory(new PropertyValueFactory("cedula"));
+    }
+    
+    private void configurarColumnasTablaEstudiante(){
+    	columnCedulaEstudiante.setCellValueFactory(new PropertyValueFactory("cedula"));
         columnNombreEstudiante.setCellValueFactory(new PropertyValueFactory("nombreCompleto"));
         columnCinturonEstudiante.setCellValueFactory(new PropertyValueFactory("colorCinturon"));
         columnCursoEstudiante.setCellValueFactory(new PropertyValueFactory("idCurso"));
         columnEdadEstudiante.setCellValueFactory(new PropertyValueFactory("edad"));
-        // columnas de la tabla curso
-        columnIDCurso.setCellValueFactory(new PropertyValueFactory("idCurso"));
+    }
+    
+    private void configurarColumnasTablaCurso(){
+    	columnIDCurso.setCellValueFactory(new PropertyValueFactory("idCurso"));
         columnProfesorCurso.setCellValueFactory(new PropertyValueFactory("nombreProfesor"));
         columnFechaCurso.setCellValueFactory(new PropertyValueFactory("fechaClase"));
-
-        // restricciones en el textfield
-        textCedulaEstudiante.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
-        textIDempleado.setTextFormatter(Validaciones.restriccionesText("[0-9]*"));
-        textIDCurso.setTextFormatter(Validaciones.restriccionesText("[0-9]*"));
-        textProfesorCurso.setTextFormatter(Validaciones.restriccionesText("[a-zA-Z.,\\s]*"));
-
-        tableEstudiante.setItems(Estudiante.buscarTodos());
+    }
+    
+    private void anadirDatosTablas(){
+    	tableEstudiante.setItems(Estudiante.buscarTodos());
         tableEstudiante1.setItems(Curso.buscarTodos());
         tableEmpleado.setItems(Empleado.buscarTodos());
-
     }
 
     @FXML
@@ -223,62 +236,38 @@ public class VistaBuscarController implements Initializable {
                 lista.add(estudiante);
                 tableEstudiante.setItems(FXCollections.observableArrayList(lista));
                 tableEstudiante.getSelectionModel().select(estudiante);
-            } else {
-                Alert alerta = new Alert(Alert.AlertType.ERROR);
-                alerta.setHeaderText(null);
-                alerta.setContentText("Numero de cedula incorrecto o inexistente");
-                alerta.show();
-
-            }
+            } 
+            else
+            	Alerts.alertaError("Numero de cedula incorrecto o inexistente");
+                
         } catch (Exception e) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setHeaderText(null);
-            alerta.setContentText("Debe llenar el campo cedula");
-            alerta.show();
+            Alerts.alertaError("Debe llenar el campo cedula");
         }
-    }
-
-    @FXML
-    private void elegirCinturonEstudiante(ActionEvent event) {
-    }
-
-    @FXML
-    private void elegirCursoEstudiante(ActionEvent event) {
     }
 
     @FXML
     private void eliminarEstudiante(ActionEvent event) {
         Estudiante estudiante = (Estudiante) tableEstudiante.getSelectionModel().getSelectedItem();
-       Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-       alerta.setContentText("Esta seguro de eliminar al estudiante "+ estudiante.getNombreCompleto());
-       Optional<ButtonType> result = alerta.showAndWait();
-       if(result.get().getText().equals("Aceptar")){
+       String result = Alerts.alertaConfirmacion("Esta seguro de eliminar al estudiante "+ estudiante.getNombreCompleto())
+       if(result.equals("Aceptar")){
             estudiante.eliminarBD();
             tableEstudiante.getItems().clear();
             tableEstudiante.setItems(Estudiante.buscarTodos());
-            alerta = new Alert(Alert.AlertType.INFORMATION);
-            alerta.setHeaderText(null);
-            alerta.setContentText("Usuario eliminado");
-            alerta.show();
+            Alerts.alertaInformacion("Usuario eliminado");
        }
     }
 
     @FXML
     private void actualizarEstudiante(ActionEvent event) {
-        Estudiante estudiante = (Estudiante) tableEstudiante.getSelectionModel().getSelectedItem();
-       Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-       alerta.setContentText("Esta seguro de actualizar datos del estudiante "+ estudiante.getNombreCompleto());
-       Optional<ButtonType> result = alerta.showAndWait();
-       if(result.get().getText().equals("Aceptar")){
-           estudiante.setEdad(Integer.parseInt(textEdadEstudiante.getText()));
+       Estudiante estudiante = (Estudiante) tableEstudiante.getSelectionModel().getSelectedItem();
+       String result = Alerts.alertaConfirmacion("Esta seguro de actualizar datos del estudiante "+ estudiante.getNombreCompleto())
+       if(result.equals("Aceptar")){
+    	   estudiante.setEdad(Integer.parseInt(textEdadEstudiante.getText()));
            estudiante.setNombreCompleto(textNombreEstudiante.getText());
-            estudiante.actualizarBD();
-            tableEstudiante.getItems().clear();
-            tableEstudiante.setItems(Estudiante.buscarTodos());
-            alerta = new Alert(Alert.AlertType.INFORMATION);
-            alerta.setHeaderText(null);
-            alerta.setContentText("Usuario actualizado");
-            alerta.show();
+           estudiante.actualizarBD();
+           tableEstudiante.getItems().clear();
+           tableEstudiante.setItems(Estudiante.buscarTodos());
+           Alerts.alertaInformacion("Usuario actualizado");
        }
     }
 
@@ -297,17 +286,11 @@ public class VistaBuscarController implements Initializable {
                 ArrayList<Empleado> lista = new ArrayList<>();
                 lista.add(empleado);
                 tableEmpleado.setItems(FXCollections.observableArrayList(lista));
-            } else {
-                Alert alerta = new Alert(Alert.AlertType.ERROR);
-                alerta.setHeaderText(null);
-                alerta.setContentText("Numero de ID incorrecto o inexistente");
-                alerta.show();
-            }
+            } 
+            else 
+            	Alerts.alertaError("Numero de ID incorrecto o inexistente");
         } catch (Exception e) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setHeaderText(null);
-            alerta.setContentText("Debe llenar el campo ID");
-            alerta.show();
+        	Alerts.alertaError("Debe llenar el campo ID");
         }
     }
 
@@ -379,10 +362,10 @@ public class VistaBuscarController implements Initializable {
         Empleado empleado = (Empleado) tableEmpleado.getSelectionModel().getSelectedItem();
         textIDempleado.setText(String.valueOf(empleado.getId()));
         textNombreEmpleado.setText(empleado.getNombreCompleto());
-         textFechaNacEmpleado.setText(empleado.getFechaNacimiento());
-         textCorreoEmpleado.setText(empleado.getCorreoElectronico());
-         textDireccionEmpleado.setText(empleado.getDireccionDomicilio());
-         textTelfEmpleado.setText(empleado.getTelefono());
+        textFechaNacEmpleado.setText(empleado.getFechaNacimiento());
+        textCorreoEmpleado.setText(empleado.getCorreoElectronico());
+        textDireccionEmpleado.setText(empleado.getDireccionDomicilio());
+        textTelfEmpleado.setText(empleado.getTelefono());
     }
 
     @FXML

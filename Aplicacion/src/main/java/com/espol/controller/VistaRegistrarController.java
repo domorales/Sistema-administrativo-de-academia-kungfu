@@ -104,22 +104,30 @@ public class VistaRegistrarController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-  
-        textNombreCompleto.setTextFormatter(Validaciones.restriccionesText("[A-Za-z\\s]*"));
-        textNombreEmpleado.setTextFormatter(Validaciones.restriccionesText("[A-Za-z\\s]*"));
-        textCedula.setTextFormatter(Validaciones.restriccionesText("[0-9].{0,10}"));
-        textCedulaEmpleado.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
-        textCedulaFamiliar.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
-        textTelefonoEmpleado.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
-        textCorreoEmpleado.setTextFormatter(Validaciones.restriccionesText("[A-Za-z0-9._%+-@.]*"));
-        comboBoxCurso.getItems().clear();
+    	definirFormatoTexto();
+        configurarComboxs();
+        
+    }
+    
+    private void definirFormatoTexto(){
+    	 textNombreCompleto.setTextFormatter(Validaciones.restriccionesText("[A-Za-z\\s]*"));
+         textNombreEmpleado.setTextFormatter(Validaciones.restriccionesText("[A-Za-z\\s]*"));
+         textCedula.setTextFormatter(Validaciones.restriccionesText("[0-9].{0,10}"));
+         textCedulaEmpleado.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
+         textCedulaFamiliar.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
+         textTelefonoEmpleado.setTextFormatter(Validaciones.restriccionesText("[0-9]{0,10}"));
+         textCorreoEmpleado.setTextFormatter(Validaciones.restriccionesText("[A-Za-z0-9._%+-@.]*"));
+    }
+    
+    private void configurarComboxs(){
+    	comboBoxCurso.getItems().clear();
         comboBoxCurso.setItems(FXCollections.observableArrayList(Curso.obtenerCursos()));
         comboBoxCursoEmpleado.getItems().clear();
         comboBoxCursoEmpleado.setItems(FXCollections.observableArrayList(Curso.obtenerCursos()));
         comboBoxCargo.getItems().clear();
         comboBoxCargo.getItems().addAll("Administración", "Mantenimiento","Profesor");
-        
     }
+    
     @FXML
     private void cambiarUsuario(MouseEvent event) {
         panelEmpleado.setVisible(false);

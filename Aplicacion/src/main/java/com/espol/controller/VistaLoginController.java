@@ -5,6 +5,7 @@
  */
 package com.espol.controller;
 
+import com.espol.controller.alerts.Alerts;
 import com.espol.proyectobd.App;
 import java.io.IOException;
 import java.net.URL;
@@ -43,12 +44,8 @@ public class VistaLoginController implements Initializable {
     private void ingresar(MouseEvent event) throws IOException {
         if( textUsuario.getText().equals("admin") && textContaseña.getText().equals("1234"))
             App.setRoot("VistaMenu");
-        else{
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setHeaderText(null);
-            alerta.setContentText("Usuario o contraseña incorrecta");
-            alerta.show();
-        }
+        else
+        	Alerts.alertaError("Usuario o contraseña incorrecta");
     }
     
 }
