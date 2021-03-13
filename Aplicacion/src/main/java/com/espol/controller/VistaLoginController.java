@@ -28,7 +28,7 @@ public class VistaLoginController implements Initializable {
     @FXML
     private TextField textUsuario;
     @FXML
-    private PasswordField textContase√±a;
+    private PasswordField textContaseÒa;
     @FXML
     private Button bttIngresar;
 
@@ -42,7 +42,7 @@ public class VistaLoginController implements Initializable {
 
     @FXML
     private void ingresar(MouseEvent event) throws IOException {
-        if( textUsuario.getText().equals("admin") && textContase√±a.getText().equals("1234"))
+        if( textUsuario.getText().equals("admin") && textContaseÒa.getText().equals("1234"))
             App.setRoot("VistaMenu");
         else
         	Alerts.alertaError("Usuario o contrase√±a incorrecta");

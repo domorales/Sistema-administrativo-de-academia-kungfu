@@ -190,6 +190,32 @@ public class VistaBuscarController implements Initializable {
         tableEstudiante1.setItems(Curso.buscarTodos());
         tableEmpleado.setItems(Empleado.buscarTodos());
     }
+    
+    private void mostrarDatosEstudiante(Estudiante estudiante){
+    	textCedulaEstudiante.setText(String.valueOf(estudiante.getCedula()));
+        textNombreEstudiante.setText(estudiante.getNombreCompleto());
+        textEdadEstudiante.setText(String.valueOf(estudiante.getEdad()));
+        comboBoxCinturonEstudiante.getItems().clear();
+        comboBoxCinturonEstudiante.getItems().add(estudiante.getColorCinturon());
+        comboBoxCinturonEstudiante.getSelectionModel().selectFirst();
+        comboBoxCursoEstudiante.getItems().clear();
+        comboBoxCursoEstudiante.setItems(FXCollections.observableArrayList(Curso.obtenerCursos()));
+        comboBoxCursoEstudiante.getSelectionModel().select(String.valueOf(estudiante.getIdCurso()));
+    }
+    
+    private void actualizarTablaEstudiante(){
+    	tableEstudiante.getItems().clear();
+        tableEstudiante.setItems(Estudiante.buscarTodos());
+    }
+    
+    private void mostrarDatosEmpleado(Empleado empleado){
+    	textIDempleado.setText(String.valueOf(empleado.getId()));
+        textNombreEmpleado.setText(empleado.getNombreCompleto());
+        textFechaNacEmpleado.setText(empleado.getFechaNacimiento());
+        textCorreoEmpleado.setText(empleado.getCorreoElectronico());
+        textDireccionEmpleado.setText(empleado.getDireccionDomicilio());
+        textTelfEmpleado.setText(empleado.getTelefono());
+    }
 
     @FXML
     private void cambiarUsuario(MouseEvent event) {
@@ -222,15 +248,7 @@ public class VistaBuscarController implements Initializable {
         try {
             Estudiante estudiante = Estudiante.buscarEstudiante(Integer.parseInt(textCedulaEstudiante.getText()));
             if (estudiante.getNombreCompleto() != null) {
-                textCedulaEstudiante.setText(String.valueOf(estudiante.getCedula()));
-                textNombreEstudiante.setText(estudiante.getNombreCompleto());
-                textEdadEstudiante.setText(String.valueOf(estudiante.getEdad()));
-                comboBoxCinturonEstudiante.getItems().clear();
-                comboBoxCinturonEstudiante.getItems().add(estudiante.getColorCinturon());
-                comboBoxCinturonEstudiante.getSelectionModel().selectFirst();
-                comboBoxCursoEstudiante.getItems().clear();
-                comboBoxCursoEstudiante.setItems(FXCollections.observableArrayList(Curso.obtenerCursos()));
-                comboBoxCursoEstudiante.getSelectionModel().select(String.valueOf(estudiante.getIdCurso()));
+                mostrarDatosEstudiante(estudiante);
                 tableEstudiante.getItems().clear();
                 ArrayList<Estudiante> lista = new ArrayList<>();
                 lista.add(estudiante);
@@ -247,12 +265,11 @@ public class VistaBuscarController implements Initializable {
 
     @FXML
     private void eliminarEstudiante(ActionEvent event) {
-        Estudiante estudiante = (Estudiante) tableEstudiante.getSelectionModel().getSelectedItem();
-       String result = Alerts.alertaConfirmacion("Esta seguro de eliminar al estudiante "+ estudiante.getNombreCompleto())
+       Estudiante estudiante = (Estudiante) tableEstudiante.getSelectionModel().getSelectedItem();
+       String result = Alerts.alertaConfirmacion("Esta seguro de eliminar al estudiante "+ estudiante.getNombreCompleto());
        if(result.equals("Aceptar")){
             estudiante.eliminarBD();
-            tableEstudiante.getItems().clear();
-            tableEstudiante.setItems(Estudiante.buscarTodos());
+            actualizarTablaEstudiante();
             Alerts.alertaInformacion("Usuario eliminado");
        }
     }
@@ -260,13 +277,12 @@ public class VistaBuscarController implements Initializable {
     @FXML
     private void actualizarEstudiante(ActionEvent event) {
        Estudiante estudiante = (Estudiante) tableEstudiante.getSelectionModel().getSelectedItem();
-       String result = Alerts.alertaConfirmacion("Esta seguro de actualizar datos del estudiante "+ estudiante.getNombreCompleto())
+       String result = Alerts.alertaConfirmacion("Esta seguro de actualizar datos del estudiante "+ estudiante.getNombreCompleto());
        if(result.equals("Aceptar")){
     	   estudiante.setEdad(Integer.parseInt(textEdadEstudiante.getText()));
            estudiante.setNombreCompleto(textNombreEstudiante.getText());
            estudiante.actualizarBD();
-           tableEstudiante.getItems().clear();
-           tableEstudiante.setItems(Estudiante.buscarTodos());
+           actualizarTablaEstudiante();
            Alerts.alertaInformacion("Usuario actualizado");
        }
     }
@@ -276,12 +292,7 @@ public class VistaBuscarController implements Initializable {
         try {
             Empleado empleado = Empleado.buscarEmpleado(Integer.parseInt(textIDempleado.getText()));
             if (empleado.getNombreCompleto() != null) {
-                textIDempleado.setText(String.valueOf(empleado.getId()));
-                textNombreEmpleado.setText(empleado.getNombreCompleto());
-                textFechaNacEmpleado.setText(empleado.getFechaNacimiento());
-                textCorreoEmpleado.setText(empleado.getCorreoElectronico());
-                textDireccionEmpleado.setText(empleado.getDireccionDomicilio());
-                textTelfEmpleado.setText(empleado.getTelefono());
+            	mostrarDatosEmpleado(empleado);
                 tableEmpleado.getItems().clear();
                 ArrayList<Empleado> lista = new ArrayList<>();
                 lista.add(empleado);
@@ -352,8 +363,7 @@ public class VistaBuscarController implements Initializable {
         textEdadEstudiante.clear();
         comboBoxCinturonEstudiante.getItems().clear();
         comboBoxCursoEstudiante.getItems().clear();
-        tableEstudiante.getItems().clear();
-        tableEstudiante.setItems(Estudiante.buscarTodos());
+        actualizarTablaEstudiante();
         textCedulaEstudiante.setEditable(true);
     }
 
